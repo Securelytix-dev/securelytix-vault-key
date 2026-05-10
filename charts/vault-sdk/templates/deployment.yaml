@@ -1,0 +1,226 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vault-sdk.fullname" . }}
+  labels:
+    {{- include "vault-sdk.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "vault-sdk.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "vault-sdk.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "vault-sdk.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            # --- Database (from secret) ---
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: database-url
+            - name: MAX_CONNECTIONS
+              value: {{ .Values.config.maxConnections | quote }}
+            - name: MAX_IDLE_CONNS
+              value: {{ .Values.config.maxIdleConns | quote }}
+            - name: CONN_MAX_LIFETIME_MINUTES
+              value: {{ .Values.config.connMaxLifetimeMinutes | quote }}
+
+            # --- Redis (from secret) ---
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: redis-url
+            - name: CACHE_TTL
+              value: {{ .Values.config.cacheTtl | quote }}
+            - name: REDIS_POOL_SIZE
+              value: {{ .Values.config.redisPoolSize | quote }}
+            - name: REDIS_MIN_IDLE_CONNS
+              value: {{ .Values.config.redisMinIdleConns | quote }}
+            - name: REDIS_MAX_RETRIES
+              value: {{ .Values.config.redisMaxRetries | quote }}
+
+            # --- Kafka ---
+            - name: KAFKA_BROKERS
+              value: {{ .Values.config.kafkaBrokers | quote }}
+            - name: KAFKA_TOPIC
+              value: {{ .Values.config.kafkaTopic | quote }}
+            - name: KAFKA_DLQ_TOPIC
+              value: {{ .Values.config.kafkaDlqTopic | quote }}
+            - name: KAFKA_KEY_SYNC_TOPIC
+              value: {{ .Values.config.kafkaKeySyncTopic | quote }}
+            - name: KAFKA_KEY_SYNC_DLQ_TOPIC
+              value: {{ .Values.config.kafkaKeySyncDlqTopic | quote }}
+            - name: KAFKA_GROUP_ID
+              value: {{ .Values.config.kafkaGroupId | quote }}
+            - name: KAFKA_BATCH_SIZE
+              value: {{ .Values.config.kafkaBatchSize | quote }}
+            - name: KAFKA_BATCH_TIMEOUT
+              value: {{ .Values.config.kafkaBatchTimeout | quote }}
+
+            # --- Kafka Producer ---
+            - name: KAFKA_PRODUCER_BATCH_SIZE
+              value: {{ .Values.config.kafkaProducerBatchSize | quote }}
+            - name: KAFKA_PRODUCER_BATCH_TIMEOUT_MS
+              value: {{ .Values.config.kafkaProducerBatchTimeoutMs | quote }}
+            - name: KAFKA_PRODUCER_REQUIRED_ACKS
+              value: {{ .Values.config.kafkaProducerRequiredAcks | quote }}
+            - name: KAFKA_PRODUCER_MAX_RETRIES
+              value: {{ .Values.config.kafkaProducerMaxRetries | quote }}
+            - name: KAFKA_PRODUCER_RETRY_BACKOFF_MS
+              value: {{ .Values.config.kafkaProducerRetryBackoffMs | quote }}
+            - name: KAFKA_PRODUCER_WRITE_TIMEOUT_SEC
+              value: {{ .Values.config.kafkaProducerWriteTimeoutSec | quote }}
+            - name: KAFKA_PRODUCER_READ_TIMEOUT_SEC
+              value: {{ .Values.config.kafkaProducerReadTimeoutSec | quote }}
+
+            # --- Kafka DLQ Handler ---
+            - name: KAFKA_DLQ_HANDLER_MAX_RETRIES
+              value: {{ .Values.config.kafkaDlqHandlerMaxRetries | quote }}
+            - name: KAFKA_DLQ_HANDLER_RETRY_INTERVAL_SEC
+              value: {{ .Values.config.kafkaDlqHandlerRetryIntervalSec | quote }}
+
+            # --- Kafka Consumer ---
+            - name: KAFKA_CONSUMER_MIN_BYTES
+              value: {{ .Values.config.kafkaConsumerMinBytes | quote }}
+            - name: KAFKA_CONSUMER_MAX_BYTES
+              value: {{ .Values.config.kafkaConsumerMaxBytes | quote }}
+            - name: KAFKA_CONSUMER_WORKERS
+              value: {{ .Values.config.kafkaConsumerWorkers | quote }}
+
+            # --- Server ---
+            - name: SERVER_HOST
+              value: {{ .Values.config.serverHost | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.config.serverPort | quote }}
+            - name: READ_TIMEOUT
+              value: {{ .Values.config.readTimeout | quote }}
+            - name: WRITE_TIMEOUT
+              value: {{ .Values.config.writeTimeout | quote }}
+            - name: SHUTDOWN_TIMEOUT
+              value: {{ .Values.config.shutdownTimeout | quote }}
+
+            # --- Key Management ---
+            - name: KEY_MODE
+              value: {{ .Values.config.keyMode | quote }}
+            - name: WORKER_POOL_SIZE
+              value: {{ .Values.config.workerPoolSize | quote }}
+
+            # --- AWS KMS (from secret) ---
+            - name: KMS_PROVIDER
+              value: {{ .Values.config.kmsProvider | quote }}
+            - name: KMS_AUTO_REWRAP
+              value: {{ .Values.config.kmsAutoRewrap | quote }}
+            - name: KMS_CHECK_INTERVAL
+              value: {{ .Values.config.kmsCheckInterval | quote }}
+            - name: AWS_REGION
+              value: {{ .Values.config.awsRegion | quote }}
+            - name: AWS_KMS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: aws-kms-key-id
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: aws-secret-access-key
+
+            # --- Remote KMS Service (from secret) ---
+            - name: KMS_BASE_URL
+              value: {{ .Values.config.kmsBaseUrl | quote }}
+            - name: KMS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: kms-api-key
+            - name: KMS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: kms-client-id
+
+            # --- Key Sync ---
+            - name: KEY_SYNC_MAX_RETRIES
+              value: {{ .Values.config.keySyncMaxRetries | quote }}
+            - name: KEY_SYNC_RETRY_BACKOFF_SEC
+              value: {{ .Values.config.keySyncRetryBackoffSec | quote }}
+
+            # --- Tokenization (from secret) ---
+            - name: TOKEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "vault-sdk.fullname" . }}-secret
+                  key: token-key
+            - name: PERSIST_QUEUE_WORKERS
+              value: {{ .Values.config.persistQueueWorkers | quote }}
+            - name: PERSIST_QUEUE_SIZE
+              value: {{ .Values.config.persistQueueSize | quote }}
+
+            # --- Policy ---
+            - name: ENABLE_POLICY_BASED_TOKENIZATION
+              value: {{ .Values.config.enablePolicyBasedTokenization | quote }}
+            - name: POLICY_SOURCE
+              value: {{ .Values.config.policySource | quote }}
+            - name: POLICY_REFRESH_INTERVAL_SECONDS
+              value: {{ .Values.config.policyRefreshIntervalSeconds | quote }}
+
+            # --- Webhook ---
+            - name: WEBHOOK_PATH
+              value: {{ .Values.config.webhookPath | quote }}
+            - name: SDK_PUBLIC_URL
+              value: {{ .Values.config.sdkPublicUrl | quote }}
+
+            # --- Logging ---
+            - name: LOG_LEVEL
+              value: {{ .Values.config.logLevel | quote }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

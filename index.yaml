@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  vault-sdk:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-05-10T18:14:13.268700356+05:30"
+    description: Vault SDK - Tokenization and Encryption Service
+    digest: cb2f254ab8186be40070fc6d3dedca0de6ebde6e5739708a0cf74f76bcdb28cb
+    keywords:
+    - vault
+    - tokenization
+    - encryption
+    - security
+    - pii
+    maintainers:
+    - email: vault@example.com
+      name: Vault Team
+    name: vault-sdk
+    type: application
+    urls:
+    - https://prithvee-devops-securelytix.github.io/securelytix/vault-sdk-1.0.0.tgz
+    version: 1.0.0
+generated: "2026-05-10T18:14:13.266779535+05:30"

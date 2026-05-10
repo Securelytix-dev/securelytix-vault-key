@@ -1,0 +1,193 @@
+replicaCount: 3
+
+image:
+  repository: securelytix/sdk-agent
+  pullPolicy: IfNotPresent
+  tag: "1.0.0"
+
+imagePullSecrets:
+  - name: securelytix-pull-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: vault-sdk.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - vault-sdk
+          topologyKey: kubernetes.io/hostname
+
+config:
+  # Server
+  serverHost: "0.0.0.0"
+  serverPort: "8080"
+  readTimeout: "30"
+  writeTimeout: "30"
+  shutdownTimeout: "10"
+
+  # Database
+  databaseUrl: "postgresql://sdk_user:SDK@321!@192.168.120.249:5432/sdk-db?sslmode=disable"
+  maxConnections: "50"
+  maxIdleConns: "10"
+  connMaxLifetimeMinutes: "30"
+
+  # Redis
+  redisUrl: "redis://:Redis@Secure321!@192.168.120.249:6379"
+  cacheTtl: "86400"
+  redisPoolSize: "10"
+  redisMinIdleConns: "2"
+  redisMaxRetries: "3"
+
+  # Kafka
+  kafkaBrokers: "k8s-develop-kafkalb-47b33c0096-19c66fa0d85ee8b8.elb.ap-south-1.amazonaws.com:9092"
+  kafkaTopic: "vault-tokens"
+  kafkaDlqTopic: "vault-tokens-dlq"
+  kafkaKeySyncTopic: "vault-key-sync"
+  kafkaKeySyncDlqTopic: "vault-key-sync-dlq"
+  kafkaGroupId: "vault-consumer"
+  kafkaBatchSize: "200"
+  kafkaBatchTimeout: "30"
+
+  # Kafka Producer
+  kafkaProducerBatchSize: "100"
+  kafkaProducerBatchTimeoutMs: "1000"
+  kafkaProducerRequiredAcks: "1"
+  kafkaProducerMaxRetries: "3"
+  kafkaProducerRetryBackoffMs: "250"
+  kafkaProducerWriteTimeoutSec: "10"
+  kafkaProducerReadTimeoutSec: "10"
+
+  # Kafka DLQ Handler
+  kafkaDlqHandlerMaxRetries: "3"
+  kafkaDlqHandlerRetryIntervalSec: "5"
+
+  # Kafka Consumer
+  kafkaConsumerMinBytes: "1"
+  kafkaConsumerMaxBytes: "10485760"
+  kafkaConsumerWorkers: "4"
+
+  # Key Management
+  keyMode: "column_wise"
+  workerPoolSize: "4"
+
+  # KMS
+  kmsProvider: "aws_kms"
+  kmsAutoRewrap: "true"
+  kmsCheckInterval: "5"
+  kmsBaseUrl: "https://kms-svc.securelytix.tech"
+  awsRegion: "ap-south-1"
+
+  # Key Sync
+  keySyncMaxRetries: "3"
+  keySyncRetryBackoffSec: "5"
+
+  # Tokenization
+  persistQueueWorkers: "4"
+  persistQueueSize: "1000"
+
+  # Policy
+  enablePolicyBasedTokenization: "true"
+  policySource: "api"
+  policyRefreshIntervalSeconds: "300"
+
+  # Webhook
+  webhookPath: "/webhook/keys"
+  sdkPublicUrl: ""
+
+  # Logging
+  logLevel: "warn"
+
+# Sensitive secrets — must be overridden at install time
+secrets:
+  awsKmsKeyId: "REPLACE_WITH_KMS_KEY_ID"
+  awsAccessKeyId: "REPLACE_WITH_AWS_ACCESS_KEY_ID"
+  awsSecretAccessKey: "REPLACE_WITH_AWS_SECRET_ACCESS_KEY"
+  kmsApiKey: "REPLACE_WITH_KMS_API_KEY"
+  kmsClientId: "REPLACE_WITH_KMS_CLIENT_ID"
+  tokenKey: "REPLACE_WITH_32_BYTE_HEX_TOKEN_KEY"
+  dockerhubUsername: "REPLACE_WITH_DOCKERHUB_USERNAME"
+  dockerhubToken: "REPLACE_WITH_DOCKERHUB_TOKEN"
+
+externalSecrets:
+  enabled: false
+  secretName: vault-sdk-secrets
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
