@@ -3,7 +3,7 @@ entries:
   vault-sdk:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-05-11T11:20:10.287849098+05:30"
+    created: "2026-05-11T11:27:52.045084706+05:30"
     description: Vault SDK - Tokenization and Encryption Service
     digest: b3c34d86abd8f8013aac1dafddf06a8ed4ac6983fdf44ee02ed93defa0e818ff
     keywords:
@@ -20,4 +20,4 @@ entries:
     urls:
     - https://charts.securelytix.tech/vault-sdk-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-11T11:20:10.286032343+05:30"
+generated: "2026-05-11T11:27:52.044184597+05:30"
