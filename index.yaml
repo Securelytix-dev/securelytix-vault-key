@@ -3,9 +3,9 @@ entries:
   dev-sdk:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-05-11T14:08:16.014840519+05:30"
+    created: "2026-05-11T15:55:32.768535681+05:30"
     description: Securelytix Dev SDK - Token Vault Service
-    digest: a2dd3fea69fd38ca4c48562748318aff92fb90feef0e062f787e6fa5322d77b7
+    digest: bec873cc87d9dcb094299dec227e0e1065440d0e5ccb0ce4fdfb953e2e50d0d7
     keywords:
     - vault
     - tokenization
@@ -19,4 +19,4 @@ entries:
     urls:
     - https://charts.securelytix.tech/dev-sdk-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-11T14:08:16.014149247+05:30"
+generated: "2026-05-11T15:55:32.767647881+05:30"
