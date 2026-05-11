@@ -1,9 +1,28 @@
 apiVersion: v1
 entries:
+  dev-sdk:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-05-11T14:00:11.176785875+05:30"
+    description: Securelytix Dev SDK - Token Vault Service
+    digest: a2dd3fea69fd38ca4c48562748318aff92fb90feef0e062f787e6fa5322d77b7
+    keywords:
+    - vault
+    - tokenization
+    - security
+    - pii
+    maintainers:
+    - email: support@securelytix.tech
+      name: Securelytix
+    name: dev-sdk
+    type: application
+    urls:
+    - https://charts.securelytix.tech/dev-sdk-1.0.0.tgz
+    version: 1.0.0
   vault-sdk:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-05-11T11:31:46.561688352+05:30"
+    created: "2026-05-11T14:00:11.178329554+05:30"
     description: Vault SDK - Tokenization and Encryption Service
     digest: b3c34d86abd8f8013aac1dafddf06a8ed4ac6983fdf44ee02ed93defa0e818ff
     keywords:
@@ -20,4 +39,4 @@ entries:
     urls:
     - https://charts.securelytix.tech/vault-sdk-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-11T11:31:46.560832068+05:30"
+generated: "2026-05-11T14:00:11.175872912+05:30"
