@@ -3,9 +3,14 @@ entries:
   dev-sdk:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-05-11T16:59:23.321971317+05:30"
+    created: "2026-05-11T18:45:27.778559036+05:30"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.x.x
     description: Securelytix Dev SDK - Token Vault Service
-    digest: a2a34b33c946eda40433d31a1cd8b6ea4a99b7806efd44179001e55d93f1874d
+    digest: b78debf9402a5c8dfbbe84c0925c2a16f12d96c087ddb70b8fa6710fc5c88c69
     keywords:
     - vault
     - tokenization
@@ -19,4 +24,4 @@ entries:
     urls:
     - https://charts.securelytix.tech/dev-sdk-1.0.0.tgz
     version: 1.0.0
-generated: "2026-05-11T16:59:23.321470935+05:30"
+generated: "2026-05-11T18:45:27.772287497+05:30"
