@@ -1,7 +1,7 @@
 replicaCount: 3
 
 image:
-  repository: securelytix/sdk-agent
+  repository: securelytix2026/sdk-agent
   pullPolicy: IfNotPresent
   tag: "1.0.0"
 
