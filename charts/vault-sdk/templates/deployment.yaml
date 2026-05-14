@@ -212,6 +212,20 @@ spec:
             - name: LOG_LEVEL
               value: {{ .Values.config.logLevel | quote }}
 
+            # --- OpenTelemetry ---
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.config.otelEndpoint | quote }}
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: {{ .Values.config.otelProtocol | quote }}
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Values.config.otelServiceName | quote }}
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.config.otelTracesExporter | quote }}
+            - name: OTEL_LOGS_EXPORTER
+              value: {{ .Values.config.otelLogsExporter | quote }}
+            - name: OTEL_METRICS_EXPORTER
+              value: {{ .Values.config.otelMetricsExporter | quote }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

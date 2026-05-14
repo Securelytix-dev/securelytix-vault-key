@@ -155,6 +155,15 @@ config:
   # Logging
   logLevel: "warn"
 
+  # OpenTelemetry
+  otelEnabled: "true"
+  otelEndpoint: "http://13.232.57.36:4318"
+  otelProtocol: "http/protobuf"
+  otelServiceName: "securelytix-dev-sdk"
+  otelTracesExporter: "otlp"
+  otelLogsExporter: "otlp"
+  otelMetricsExporter: "otlp"
+
 # Sensitive secrets — must be overridden at install time
 secrets:
   awsKmsKeyId: "REPLACE_WITH_KMS_KEY_ID"
