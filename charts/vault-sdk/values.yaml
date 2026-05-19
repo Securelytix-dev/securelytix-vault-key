@@ -163,6 +163,7 @@ config:
   otelTracesExporter: "otlp"
   otelLogsExporter: "otlp"
   otelMetricsExporter: "otlp"
+  otelGrpcEndpoint: "13.232.57.36:4317"
 
 # Sensitive secrets — must be overridden at install time
 secrets:
