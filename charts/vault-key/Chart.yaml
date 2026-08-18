@@ -1,9 +1,9 @@
 apiVersion: v2
-name: vault-sdk
+name: vault-key
 description: Vault SDK - Tokenization and Encryption Service
 type: application
-version: 1.0.1
-appVersion: "1.0.0"
+version: 1.0.5
+appVersion: "1.0.5"
 keywords:
   - vault
   - tokenization

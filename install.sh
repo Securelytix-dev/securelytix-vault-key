@@ -42,15 +42,14 @@ NC='\033[0m'
 
 # Configuration variables
 NAMESPACE="securelytix"
-RELEASE_NAME="dev-sdk"
+RELEASE_NAME="vault-key"
 HELM_REPO_NAME="securelytix"
 HELM_REPO_URL="https://charts.securelytix.tech"
-HELM_CHART="${HELM_REPO_NAME}/dev-sdk"
+HELM_CHART="${HELM_REPO_NAME}/vault-key"
 API_KEY=""
 DATABASE_URL=""
 LICENSE_BASE_URL="https://website-backend.securelytix.tech"
 USE_BUNDLED_PG="false"
-IMAGE_PULL_SECRET=""
 CREATE_NAMESPACE="true"
 
 # State tracking
@@ -321,28 +320,6 @@ configure_namespace() {
         fi
     fi
 
-    # DockerHub pull secret
-    echo ""
-    if ask_yes_no "Do you have a DockerHub pull secret for the SDK image?" "y"; then
-        IMAGE_PULL_SECRET=$(prompt "Secret name" "securelytix-dockerhub")
-
-        if ! kubectl get secret "$IMAGE_PULL_SECRET" -n "$NAMESPACE" &> /dev/null; then
-            print_warning "Secret '${IMAGE_PULL_SECRET}' not found in namespace '${NAMESPACE}'"
-            print_info "Create it with:"
-            echo ""
-            echo "  kubectl create secret docker-registry ${IMAGE_PULL_SECRET} \\"
-            echo "    --docker-server=https://index.docker.io/v1/ \\"
-            echo "    --docker-username=<your-username> \\"
-            echo "    --docker-password=<your-PAT-token> \\"
-            echo "    -n ${NAMESPACE}"
-            echo ""
-            if ! ask_yes_no "Continue anyway?" "n"; then
-                exit 1
-            fi
-        else
-            print_success "Pull secret found: ${IMAGE_PULL_SECRET}"
-        fi
-    fi
 
     echo ""
 }
@@ -357,7 +334,6 @@ review_config() {
     print_info "Helm Chart:         ${HELM_CHART}"
     print_info "Bundled PostgreSQL: ${USE_BUNDLED_PG}"
     print_info "License Base URL:   ${LICENSE_BASE_URL}"
-    [[ -n "$IMAGE_PULL_SECRET" ]] && print_info "Pull Secret:        ${IMAGE_PULL_SECRET}"
     echo ""
 
     if ! ask_yes_no "Proceed with installation?" "y"; then
@@ -384,10 +360,6 @@ install_sdk() {
         helm_cmd+=(--set "postgresql.enabled=true")
     else
         helm_cmd+=(--set "secrets.databaseUrl=${DATABASE_URL}")
-    fi
-
-    if [[ -n "$IMAGE_PULL_SECRET" ]]; then
-        helm_cmd+=(--set "imagePullSecrets[0].name=${IMAGE_PULL_SECRET}")
     fi
 
     print_verbose "Running: ${helm_cmd[*]}"

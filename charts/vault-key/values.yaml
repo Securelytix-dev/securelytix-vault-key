@@ -159,7 +159,7 @@ config:
   otelEnabled: "true"
   otelEndpoint: "http://13.232.57.36:4318"
   otelProtocol: "http/protobuf"
-  otelServiceName: "securelytix-dev-sdk"
+  otelServiceName: "securelytix-vault-key"
   otelTracesExporter: "otlp"
   otelLogsExporter: "otlp"
   otelMetricsExporter: "otlp"

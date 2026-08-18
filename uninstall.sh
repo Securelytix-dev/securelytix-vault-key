@@ -213,7 +213,7 @@ find_installations() {
     local releases
     releases=$(helm list --all-namespaces -o json 2>/dev/null | \
         grep -E '"name"|"namespace"|"chart"' | \
-        grep -B1 -A1 "dev-sdk" || echo "")
+        grep -B1 -A1 "vault-key" || echo "")
 
     if [[ -z "$releases" ]]; then
         print_warning "No Securelytix Dev SDK installations found"
@@ -227,7 +227,7 @@ find_installations() {
     print_success "Found installation(s):"
     echo ""
     helm list --all-namespaces | head -1
-    helm list --all-namespaces | grep dev-sdk
+    helm list --all-namespaces | grep vault-key
     echo ""
 }
 
@@ -238,12 +238,12 @@ select_installation() {
 import json, sys
 data = json.load(sys.stdin)
 for r in data:
-    if 'dev-sdk' in r.get('chart','') or r.get('name','') == 'dev-sdk':
+    if 'vault-key' in r.get('chart','') or r.get('name','') == 'vault-key':
         print(f\"{r['name']}|{r['namespace']}\")
 " 2>/dev/null || echo "")
 
     if [[ -z "$releases" ]]; then
-        print_error "Could not find any dev-sdk installations"
+        print_error "Could not find any vault-key installations"
         exit 1
     fi
 

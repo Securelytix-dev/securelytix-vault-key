@@ -1,50 +1,23 @@
 apiVersion: v1
 entries:
-  dev-sdk:
+  vault-key:
   - apiVersion: v2
-    appVersion: 1.0.1
-    created: "2026-05-12T12:28:41.122981866+05:30"
-    dependencies:
-    - condition: postgresql.enabled
-      name: postgresql
-      repository: https://charts.bitnami.com/bitnami
-      version: 18.x.x
-    description: Securelytix Dev SDK - Token Vault Service
-    digest: 6bf987fd0bc474987aba787f151857e031eaa4e0dd4f8ce7b54d12b2d2c08404
+    appVersion: 1.0.5
+    created: "2026-08-18T16:17:16.921482439+05:30"
+    description: Vault SDK - Tokenization and Encryption Service
+    digest: 157fc88819f10055f5b48bc0e5c5cf95f880cb4e6221ceeca6da64ed5e480663
     keywords:
     - vault
     - tokenization
+    - encryption
     - security
     - pii
     maintainers:
-    - email: support@securelytix.tech
-      name: Securelytix
-    name: dev-sdk
+    - email: vault@example.com
+      name: Vault Team
+    name: vault-key
     type: application
     urls:
-    - https://charts.securelytix.tech/dev-sdk-1.0.1.tgz
-    version: 1.0.1
-  - apiVersion: v2
-    appVersion: 1.0.0
-    created: "2026-05-12T12:28:41.116437039+05:30"
-    dependencies:
-    - condition: postgresql.enabled
-      name: postgresql
-      repository: https://charts.bitnami.com/bitnami
-      version: 12.x.x
-    description: Securelytix Dev SDK - Token Vault Service
-    digest: b78debf9402a5c8dfbbe84c0925c2a16f12d96c087ddb70b8fa6710fc5c88c69
-    keywords:
-    - vault
-    - tokenization
-    - security
-    - pii
-    maintainers:
-    - email: support@securelytix.tech
-      name: Securelytix
-    name: dev-sdk
-    type: application
-    urls:
-    - https://charts.securelytix.tech/dev-sdk-1.0.0.tgz
-    version: 1.0.0
-generated: "2026-05-12T12:28:41.110789879+05:30"
+    - https://charts.securelytix.tech/vault-key-1.0.5.tgz
+    version: 1.0.5
+generated: "2026-08-18T16:17:16.916617272+05:30"
