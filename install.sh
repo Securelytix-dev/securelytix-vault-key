@@ -438,8 +438,11 @@ verify_deployment() {
     echo "   kubectl get pods -n ${NAMESPACE}"
     echo ""
 
+    local svc_name
+    svc_name=$(kubectl get svc -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${RELEASE_NAME}" -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "${RELEASE_NAME}")
+
     print_color "$BOLD" "2. Check health:"
-    echo "   kubectl port-forward svc/${RELEASE_NAME} 8080:8080 -n ${NAMESPACE}"
+    echo "   kubectl port-forward svc/${svc_name} 8080:8080 -n ${NAMESPACE}"
     echo "   curl http://localhost:8080/health"
     echo ""
 
@@ -448,7 +451,7 @@ verify_deployment() {
     echo ""
 
     print_color "$BOLD" "4. Uninstall:"
-    echo "   ./uninstall.sh"
+    echo "   curl -fsSL https://charts.securelytix.tech/uninstall.sh | bash"
     echo ""
 
     print_success "Thank you for installing Securelytix Dev SDK!"
