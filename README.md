@@ -44,9 +44,26 @@
 </tr>
 </table>
 
-| 🔍 Observability | 🔒 PII Detection | 🛡️ Fail-Closed Guard |
-| :--------------: | :--------------: | :------------------: |
-| 📊 OTel Tracing & Metrics | 🧬 Format-Preserving HMACs | 🔒 Hardware-Locked Quotas |
+<table align="center" border="0">
+<tr>
+<td align="center">
+
+<table>
+<tr>
+<td align="center">🔍 Observability</td>
+<td align="center">🔒 PII Detection</td>
+<td align="center">🛡️ Fail-Closed Guard</td>
+</tr>
+<tr>
+<td align="center">📊 OTel Tracing & Metrics</td>
+<td align="center">🧬 Format-Preserving HMACs</td>
+<td align="center">🔒 Hardware-Locked Quotas</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
 
 ## VaultKey by Securelytix
 
