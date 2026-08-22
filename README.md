@@ -171,56 +171,56 @@ Resolves token values back to plaintext.
 
 Deploy VaultKey locally using Docker or Kubernetes.
 
----
+### 1. Verify the public Docker image
 
-### 🐳 Docker
-
-#### 1. Run PostgreSQL
 
 ```bash
-docker run -d \
-  --name securelytix-postgres \
-  -e POSTGRES_USER=vault \
-  -e POSTGRES_PASSWORD=vault \
-  -e POSTGRES_DB=vault \
-  -p 5432:5432 \
-  postgres:15
+docker pull securelytix2026/vault-key:1.0.5
 ```
 
+**Expected:** the image pulls successfully.
 
-#### 2. Run VaultKey
+### 2. Add/update the Helm repository
 
-```bash
-docker run -d \
-  --name securelytix-sdk \
-  -p 8080:8080 \
-  -v /etc/machine-id:/host-machine-id:ro \
-  -e VAULT_PORT=8080 \
-  -e DATABASE_URL="postgresql://vault:vault@host.docker.internal:5432/vault?sslmode=disable" \
-  -e API_KEY="<your-api-key>" \
-  securelytix2026/vault-key:1.0.5
-```
-
----
-
-### ⚓ Kubernetes (Helm)
-
-#### 1. Add the Helm Repository
+If you haven't already added it:
 
 ```bash
 helm repo add securelytix https://charts.securelytix.tech
+```
+
+Then update:
+
+```bash
 helm repo update
 ```
 
-
-#### 2. Install VaultKey
+Verify the chart:
 
 ```bash
-helm install vault-key securelytix/vault-key \
-  --set secrets.apiKey="<your-api-key>" \
-  --set postgresql.enabled=true \
-  --set machineId.hostPath="/etc/machine-id" \
+helm show chart securelytix/vault-key
 ```
+
+**Expected:**
+
+```
+name: vault-key
+version: 1.0.5
+```
+
+### 3. Install VaultKey
+
+The recommended installation command is:
+
+```bash
+curl -fsSL https://charts.securelytix.tech/install.sh | bash
+```
+
+### 4. Uninstall VaultKey
+
+```bash
+curl -fsSL https://charts.securelytix.tech/uninstall.sh | bash
+```
+
 ---
 
 ## Securelytix Developer Console
